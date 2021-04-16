@@ -10,7 +10,28 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-eOJMYsd53ii+scO/bJGFsiCZc+5NDVN2yr8+0RDqr0Ql0h+rP48ckxlpbzKgwra6" crossorigin="anonymous">
 </head>
 <body>
+    <!--Reference main javascript functions-->
+    <script src="./numbers.js"></script>
+    <script>
+        function loadMain(){
+            var numValues = document.getElementById("numValuesInput").value;
+            var modThreeValue = document.getElementById("mod3Value").value;
+            var modFiveValue = document.getElementById("mod5Value").value;
+            loadValues(numValues, document.getElementById("main"), modThreeValue, modFiveValue);
+        }
+    </script>
     <div class="container">
+        <label for="numValuesInput">Number of Values</label>
+        <input type="number" id="numValuesInput"/>
+
+        <label for="mod3Value">Multiple of Three Value</label>
+        <input type="text" id="mod3Value"/>
+
+        <label for="mod5Value">Multiple of Five Value</label>
+        <input type="text" id="mod5Value"/>
+
+        <button class="btn btn-primary" onclick="loadMain()">Load Values</button>
+        
         <table class="table table-striped">
             <thead>
                 <tr>
@@ -23,11 +44,5 @@
             </tbody>
         </table>
     </div>
-
-    <!--Reference main javascript functions-->
-    <script src="./numbers.js"></script>
-    <script>
-        loadValues(100, document.getElementById("main"));
-    </script>
 </body>
 </html>
