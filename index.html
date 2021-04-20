@@ -90,19 +90,21 @@
             </div>
           </form>
 
-          <table
-            id="dataTable"
-            class="table table-striped"
-            style="display: none"
-          >
-            <thead>
-              <tr>
-                <th>Number</th>
-                <th>Value</th>
-              </tr>
-            </thead>
-            <tbody id="main"></tbody>
-          </table>
+          <div id="data" style="display: none">
+            <nav>
+              <ul class="pagination" id="paginationList"></ul>
+            </nav>
+
+            <table class="table table-striped">
+              <thead>
+                <tr>
+                  <th>Number</th>
+                  <th>Value</th>
+                </tr>
+              </thead>
+              <tbody id="main"></tbody>
+            </table>
+          </div>
         </div>
       </div>
     </div>
@@ -110,27 +112,17 @@
     <!--Reference main javascript functions-->
     <script src="./numbers.js"></script>
     <script>
+      const recordsPerPage = 100;
+
       /*
         Main function, adds values to the data table based on user input
         and toggles visibility so user can see the results
       */
       function loadMain() {
-        var minValue = document.getElementById("minValueInput").value;
-        var maxValue = document.getElementById("maxValueInput").value;
-        var modThreeValue = document.getElementById("mod3Value").value;
-        var modFiveValue = document.getElementById("mod5Value").value;
-
-        // call the function to add values to the data table
-        loadValues(
-          minValue,
-          maxValue,
-          document.getElementById("main"),
-          modThreeValue,
-          modFiveValue
-        );
+        navigate(1);
 
         // ensure user can see the data table and the clear button after loading values
-        document.getElementById("dataTable").removeAttribute("style");
+        document.getElementById("data").removeAttribute("style");
         document.getElementById("clear").removeAttribute("style");
       }
 
@@ -138,7 +130,7 @@
         Makes the clear button and the data table invisible to the user
       */
       function clearValues() {
-        document.getElementById("dataTable").style.display = "none";
+        document.getElementById("data").style.display = "none";
         document.getElementById("clear").style.display = "none";
       }
 
@@ -150,6 +142,76 @@
       function setMinValueMax() {
         var maxValue = document.getElementById("maxValueInput").value;
         document.getElementById("minValueInput").max = maxValue;
+      }
+
+      function navigate(index) {
+        var modThreeValue = document.getElementById("mod3Value").value;
+        var modFiveValue = document.getElementById("mod5Value").value;
+
+        var minValueInput = parseInt(
+          document.getElementById("minValueInput").value
+        );
+        var maxValueInput = parseInt(
+          document.getElementById("maxValueInput").value
+        );
+
+        // calculate max and min values for the specific page
+        var minValue = minValueInput + recordsPerPage * (index - 1);
+        var maxValue = Math.min(minValue + recordsPerPage - 1, maxValueInput);
+
+        var pageLinks = Math.ceil(
+          (maxValueInput - minValueInput + 1) / recordsPerPage
+        );
+
+        var pagesList = document.getElementById("paginationList");
+
+        var html =
+          getPageLink("First", false, index == 1, 1) +
+          getPageLink("Previous", false, index == 1, index - 1);
+
+        var pageRadius = 5;
+        for (var i = 1; i <= pageLinks; i++) {
+          if (i < index - pageRadius || i > index + pageRadius) {
+            continue;
+          }
+
+          html += getPageLink(i, i == index, false, i);
+        }
+
+        html +=
+          getPageLink("Next", false, index == pageLinks, index + 1) +
+          getPageLink("Last", false, index == pageLinks, pageLinks);
+
+        pagesList.innerHTML = html;
+
+        loadValues(
+          minValue,
+          maxValue,
+          document.getElementById("main"),
+          modThreeValue,
+          modFiveValue
+        );
+      }
+
+      function getPageLink(text, active, disabled, onclick) {
+        var link = '<li class="page-item';
+
+        if (disabled) {
+          link += " disabled ";
+        }
+        if (active) {
+          link += " active";
+        }
+
+        link += '"';
+
+        if (onclick) {
+          link += ' onclick="navigate(' + onclick + ')" ';
+        }
+
+        link += '><a class="page-link" href="#">' + text + "</a></li>";
+
+        return link;
       }
     </script>
   </body>
