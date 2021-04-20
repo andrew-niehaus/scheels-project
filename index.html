@@ -4,7 +4,8 @@
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Scheels Interviews</title>
+    <link rel="stylesheet" href="./styles.css" />
+    <title>Andrew Niehaus</title>
 
     <!--Bootstrap-->
     <link
@@ -15,20 +16,111 @@
     />
   </head>
   <body>
+    <div class="container">
+      <div class="card" style="margin-top: 20px; margin-bottom: 20px">
+        <div class="card-body">
+          <h4 class="card-title">Scheels Question</h4>
+
+          <!--On a valid form submit we call loadMain without reloading the page-->
+          <!--pattern field (.*\S+.*) ignores whitespace-->
+          <form class="mb-2" onsubmit="loadMain(); return false;">
+            <div class="row mb-2">
+              <div class="col">
+                <label for="minValueInput">Minimum Value</label>
+                <input
+                  required
+                  pattern=".*\S+.*"
+                  type="number"
+                  class="form-control"
+                  id="minValueInput"
+                  max="100"
+                  value="1"
+                />
+              </div>
+              <div class="col">
+                <label for="maxValueInput">Maximum Value</label>
+                <input
+                  required
+                  pattern=".*\S+.*"
+                  type="number"
+                  class="form-control"
+                  id="maxValueInput"
+                  value="100"
+                  onchange="setMinValueMax()"
+                />
+              </div>
+            </div>
+            <div class="row mb-2">
+              <div class="col">
+                <label for="mod3Value">Multiple of Three Value</label>
+                <input
+                  required
+                  pattern=".*\S+.*"
+                  type="text"
+                  class="form-control"
+                  id="mod3Value"
+                  value="SCHEELS"
+                />
+              </div>
+              <div class="col">
+                <label for="mod5Value">Multiple of Five Value</label>
+                <input
+                  required
+                  pattern=".*\S+.*"
+                  type="text"
+                  class="form-control"
+                  id="mod5Value"
+                  value=".COM"
+                />
+              </div>
+            </div>
+
+            <div class="row">
+              <div class="col">
+                <input type="submit" class="btn btn-primary" value="Start" />
+                <button
+                  id="clear"
+                  onclick="clearValues(); return false;"
+                  class="btn btn-outline-danger"
+                  style="display: none"
+                >
+                  Clear
+                </button>
+              </div>
+            </div>
+          </form>
+
+          <table
+            id="dataTable"
+            class="table table-striped"
+            style="display: none"
+          >
+            <thead>
+              <tr>
+                <th>Number</th>
+                <th>Value</th>
+              </tr>
+            </thead>
+            <tbody id="main"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
     <!--Reference main javascript functions-->
     <script src="./numbers.js"></script>
     <script>
+      /*
+        Main function, adds values to the data table based on user input
+        and toggles visibility so user can see the results
+      */
       function loadMain() {
         var minValue = document.getElementById("minValueInput").value;
         var maxValue = document.getElementById("maxValueInput").value;
         var modThreeValue = document.getElementById("mod3Value").value;
         var modFiveValue = document.getElementById("mod5Value").value;
 
-        if (!minValue || !maxValue || !modThreeValue || !modFiveValue) {
-          alert("Please enter a value for all inputs");
-          return;
-        }
-
+        // call the function to add values to the data table
         loadValues(
           minValue,
           maxValue,
@@ -36,41 +128,29 @@
           modThreeValue,
           modFiveValue
         );
+
+        // ensure user can see the data table and the clear button after loading values
+        document.getElementById("dataTable").removeAttribute("style");
+        document.getElementById("clear").removeAttribute("style");
+      }
+
+      /*
+        Makes the clear button and the data table invisible to the user
+      */
+      function clearValues() {
+        document.getElementById("dataTable").style.display = "none";
+        document.getElementById("clear").style.display = "none";
+      }
+
+      /*
+        Sets the maximum accepted value in the min input field
+        to the value of the max input field. This ensures the
+        minimum value is always <= maximum value
+      */
+      function setMinValueMax() {
+        var maxValue = document.getElementById("maxValueInput").value;
+        document.getElementById("minValueInput").max = maxValue;
       }
     </script>
-    <div class="container">
-      <div class="row mb-2">
-        <div class="col">
-          <label for="minValueInput">Minimum Value</label>
-          <input type="number" id="minValueInput" value="1" />
-        </div>
-        <div class="col">
-          <label for="maxValueInput">Maximum Value</label>
-          <input type="number" id="maxValueInput" value="100" />
-        </div>
-      </div>
-      <div class="row">
-        <div class="col">
-          <label for="mod3Value">Multiple of Three Value</label>
-          <input type="text" id="mod3Value" value="SCHEELS" />
-        </div>
-        <div class="col">
-          <label for="mod5Value">Multiple of Five Value</label>
-          <input type="text" id="mod5Value" value=".COM" />
-        </div>
-      </div>
-
-      <button class="btn btn-primary" onclick="loadMain()">Start</button>
-
-      <table class="table table-striped">
-        <thead>
-          <tr>
-            <th>Number</th>
-            <th>Value</th>
-          </tr>
-        </thead>
-        <tbody id="main"></tbody>
-      </table>
-    </div>
   </body>
 </html>
