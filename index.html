@@ -52,24 +52,24 @@
             </div>
             <div class="row mb-2">
               <div class="col">
-                <label for="mod3Value">Multiple of Three Value</label>
+                <label for="modThreeValue">Multiple of Three Value</label>
                 <input
                   required
                   pattern=".*\S+.*"
                   type="text"
                   class="form-control"
-                  id="mod3Value"
+                  id="modThreeValue"
                   value="SCHEELS"
                 />
               </div>
               <div class="col">
-                <label for="mod5Value">Multiple of Five Value</label>
+                <label for="modFiveValue">Multiple of Five Value</label>
                 <input
                   required
                   pattern=".*\S+.*"
                   type="text"
                   class="form-control"
-                  id="mod5Value"
+                  id="modFiveValue"
                   value=".COM"
                 />
               </div>
@@ -113,12 +113,32 @@
     <script src="./numbers.js"></script>
     <script>
       const recordsPerPage = 100;
+      const pageRadius = 5; // how many page links to show to the left and right of the active link
+
+      var modThreeValue;
+      var modFiveValue;
+      var minValueInput;
+      var maxValueInput;
 
       /*
         Main function, adds values to the data table based on user input
         and toggles visibility so user can see the results
       */
       function loadMain() {
+        // update the variables used by the navigate function
+        // so if the input values are changed the table still
+        // shows the values selected when run was clicked
+        modThreeValue = document.getElementById("modThreeValue").value;
+        modFiveValue = document.getElementById("modFiveValue").value;
+
+        minValueInput = parseInt(
+          document.getElementById("minValueInput").value
+        );
+        maxValueInput = parseInt(
+          document.getElementById("maxValueInput").value
+        );
+
+        // show the first page of data
         navigate(1);
 
         // ensure user can see the data table and the clear button after loading values
@@ -144,17 +164,11 @@
         document.getElementById("minValueInput").max = maxValue;
       }
 
+      /*
+        Shows a page of data in the data table to avoid trying to load
+        very large quantities of data.
+      */
       function navigate(index) {
-        var modThreeValue = document.getElementById("mod3Value").value;
-        var modFiveValue = document.getElementById("mod5Value").value;
-
-        var minValueInput = parseInt(
-          document.getElementById("minValueInput").value
-        );
-        var maxValueInput = parseInt(
-          document.getElementById("maxValueInput").value
-        );
-
         // calculate max and min values for the specific page
         var minValue = minValueInput + recordsPerPage * (index - 1);
         var maxValue = Math.min(minValue + recordsPerPage - 1, maxValueInput);
@@ -163,13 +177,13 @@
           (maxValueInput - minValueInput + 1) / recordsPerPage
         );
 
+        // setup our pagination list
         var pagesList = document.getElementById("paginationList");
 
         var html =
           getPageLink("First", false, index == 1, 1) +
           getPageLink("Previous", false, index == 1, index - 1);
 
-        var pageRadius = 5;
         for (var i = 1; i <= pageLinks; i++) {
           if (i < index - pageRadius || i > index + pageRadius) {
             continue;
@@ -184,6 +198,7 @@
 
         pagesList.innerHTML = html;
 
+        // page of values get loaded to the table here
         loadValues(
           minValue,
           maxValue,
@@ -193,6 +208,9 @@
         );
       }
 
+      /*
+        Helper function for easily generating a bootstrap page link
+      */
       function getPageLink(text, active, disabled, onclick) {
         var link = '<li class="page-item';
 
