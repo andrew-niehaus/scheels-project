@@ -19,7 +19,7 @@
     <div class="container">
       <div class="card" style="margin-top: 20px; margin-bottom: 20px">
         <div class="card-body">
-          <h4 class="card-title">Scheels Question</h4>
+          <h4 class="card-title">Scheels.com Project</h4>
 
           <!--On a valid form submit we call loadMain without reloading the page-->
           <!--pattern field (.*\S+.*) ignores whitespace-->
@@ -84,7 +84,7 @@
                   class="btn btn-outline-danger"
                   style="display: none"
                 >
-                  Clear
+                  Reset
                 </button>
               </div>
             </div>
@@ -115,14 +115,16 @@
       const recordsPerPage = 100;
       const pageRadius = 5; // how many page links to show to the left and right of the active link
 
+      // values entered by user
+      // using variables so data persists until user clicks run again
       var modThreeValue;
       var modFiveValue;
       var minValueInput;
       var maxValueInput;
 
       /*
-        Main function, adds values to the data table based on user input
-        and toggles visibility so user can see the results
+        Function to run when user clicks run. Updates variables used by 
+        navigate and shows first page of data
       */
       function loadMain() {
         // update the variables used by the navigate function
@@ -186,6 +188,7 @@
 
         for (var i = 1; i <= pageLinks; i++) {
           if (i < index - pageRadius || i > index + pageRadius) {
+            // i is not in our page radius so skip to next
             continue;
           }
 
@@ -223,7 +226,7 @@
 
         link += '"';
 
-        if (onclick) {
+        if (onclick && !disabled) {
           link += ' onclick="navigate(' + onclick + ')" ';
         }
 
